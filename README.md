@@ -28,4 +28,3 @@ To run allure report locally use the following command:
 allure serve allure-results
 ```
 
-
