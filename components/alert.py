@@ -24,3 +24,4 @@ class AlertComponent:
         assert (
             expected_message in actual_message
         ), f"Expected message to be '{expected_message}' but found '{actual_message}'"
+
