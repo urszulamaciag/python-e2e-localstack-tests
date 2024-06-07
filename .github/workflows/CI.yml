@@ -47,7 +47,7 @@ jobs:
           ADMIN_PASSWORD: "admin"
           BACKEND_URL: "http://localhost:4001"
           IS_HEADLESS: "true"
-        run: pytest --alluredir=allure-results tests/
+        run: pytest --alluredir=allure-results tests/ --ignore=tests/api
 
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -110,7 +110,7 @@ jobs:
           ADMIN_PASSWORD: "admin"
           BACKEND_URL: "http://localhost:4001"
           IS_HEADLESS: "true"
-        run: pytest tests/ -n auto
+        run: pytest tests/ -n auto --ignore=tests/api
 
   test_api:
     runs-on: ubuntu-latest
