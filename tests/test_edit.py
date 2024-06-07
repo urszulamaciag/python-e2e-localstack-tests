@@ -4,7 +4,6 @@ from api.data.register import User
 from api.get_user import GetUser
 from generators.user_generator import get_random_user
 from pages.home_page import HomePage
-from .fixtures import logged_in_test, chrome_browser  # used
 
 
 def test_autocomplete(logged_in_test: Tuple[HomePage, str, User]):

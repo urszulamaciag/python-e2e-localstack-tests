@@ -2,7 +2,6 @@ import pytest
 import os
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
-from .fixtures import chrome_browser  # used
 from dotenv import load_dotenv
 
 load_dotenv()
