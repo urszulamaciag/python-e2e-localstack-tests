@@ -1,137 +1,112 @@
+name: Python application test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:  # This line enables manual triggering
+
 jobs:
   test_web_chrome:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12.1"]
+        python-version: ['3.12.1']
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Checkout external repository
-        uses: actions/checkout@v4
-        with:
-          repository: "slawekradzyminski/awesome-localstack"
-          path: "awesome-localstack"
-      - name: Run Docker Compose
-        run: |
-          cd awesome-localstack
-          chmod +x run-docker-compose-ci.sh
-          ./run-docker-compose-ci.sh
+    - name: Checkout external repository
+      uses: actions/checkout@v4
+      with:
+        repository: "slawekradzyminski/awesome-localstack"
+        path: "awesome-localstack"
+    - name: Run Docker Compose
+      run: |
+        cd awesome-localstack
+        chmod +x run-docker-compose-ci.sh
+        ./run-docker-compose-ci.sh
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@latest
 
-      - name: Installing all necessary packages
-        run: pip install -r requirements.txt
+    - name: Installing all necessary packages
+      run: pip install -r requirements.txt
 
-      - name: GUI tests
-        env:
-          FRONTEND_URL: "http://localhost:8081"
-          ADMIN_USERNAME: "admin"
-          ADMIN_PASSWORD: "admin"
-          BACKEND_URL: "http://localhost:4001"
-          IS_HEADLESS: "true"
-        run: pytest --alluredir=allure-results tests/
+    - name: GUI tests
+      env:
+        FRONTEND_URL: "http://localhost:8081"
+        ADMIN_USERNAME: "admin"
+        ADMIN_PASSWORD: "admin"
+        BACKEND_URL: "http://localhost:4001"
+        IS_HEADLESS: "true"
+      run: pytest --alluredir=allure-results tests/
 
-      - name: Get Allure history
-        uses: actions/checkout@v3
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
+    - name: Get Allure history
+      uses: actions/checkout@v3
+      if: always()
+      continue-on-error: true
+      with:
+        ref: gh-pages
+        path: gh-pages
 
-      - name: Allure Report action from marketplace
-        uses: simple-elf/allure-report-action@v1.7
-        if: always()
-        with:
-          allure_results: allure-results
-          allure_history: allure-history
+    - name: Allure Report action from marketplace
+      uses: simple-elf/allure-report-action@v1.7
+      if: always()
+      with:
+        allure_results: allure-results
+        allure_history: allure-history
 
-      - name: Deploy report to Github Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v2
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
+    - name: Deploy report to Github Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: allure-history
 
   test_web_parallel:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12.1"]
+        python-version: ['3.12.1']
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Checkout external repository
-        uses: actions/checkout@v4
-        with:
-          repository: "slawekradzyminski/awesome-localstack"
-          path: "awesome-localstack"
-      - name: Run Docker Compose
-        run: |
-          cd awesome-localstack
-          chmod +x run-docker-compose-ci.sh
-          ./run-docker-compose-ci.sh
+    # te 2 linie to setup środowiska. mogą nie być potrzebne w Waszej pracy
+    - name: Checkout external repository
+      uses: actions/checkout@v4
+      with:
+        repository: "slawekradzyminski/awesome-localstack"
+        path: "awesome-localstack"
+    - name: Run Docker Compose
+      run: |
+        cd awesome-localstack
+        chmod +x run-docker-compose-ci.sh
+        ./run-docker-compose-ci.sh
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
+    - name: Installing all necessary packages
+      run: pip install -r requirements.txt pytest-xdist
 
-      - name: Installing all necessary packages
-        run: pip install -r requirements.txt pytest-xdist
-
-      - name: Parallel GUI tests
-        env:
-          FRONTEND_URL: "http://localhost:8081"
-          ADMIN_USERNAME: "admin"
-          ADMIN_PASSWORD: "admin"
-          BACKEND_URL: "http://localhost:4001"
-          IS_HEADLESS: "true"
-        run: pytest tests/ -n auto --ignore=tests/api
-
-  test_api_login:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12.1"]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Checkout external repository
-        uses: actions/checkout@v4
-        with:
-          repository: "slawekradzyminski/awesome-localstack"
-          path: "awesome-localstack"
-      - name: Run Docker Compose
-        run: |
-          cd awesome-localstack
-          chmod +x run-docker-compose-ci.sh
-          ./run-docker-compose-ci.sh
-
-      - name: Installing all necessary packages
-        run: pip install -r requirements.txt
-
-      - name: API login tests
-        env:
-          ADMIN_USERNAME: "admin"
-          ADMIN_PASSWORD: "admin"
-        run: pytest tests/api/test_api_login.py
+    - name: Parallel GUI tests
+      env:
+        FRONTEND_URL: "http://localhost:8081"
+        ADMIN_USERNAME: "admin"
+        ADMIN_PASSWORD: "admin"
+        BACKEND_URL: "http://localhost:4001"
+        IS_HEADLESS: "true"
+      run: pytest tests/ -n auto
