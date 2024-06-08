@@ -48,7 +48,7 @@ jobs:
         ADMIN_PASSWORD: "admin"
         BACKEND_URL: "http://localhost:4001"
         IS_HEADLESS: "true"
-      run: pytest --alluredir=allure-results tests/
+      run: pytest --alluredir=allure-results tests/ --ignore=tests/api
 
     - name: Get Allure history
       uses: actions/checkout@v3
@@ -99,9 +99,6 @@ jobs:
         chmod +x run-docker-compose-ci.sh
         ./run-docker-compose-ci.sh
 
-    # - name: Setup Chrome
-    #   uses: browser-actions/setup-chrome@latest
-
     - name: Installing all necessary packages
       run: pip install -r requirements.txt pytest-xdist
 
@@ -112,4 +109,39 @@ jobs:
         ADMIN_PASSWORD: "admin"
         BACKEND_URL: "http://localhost:4001"
         IS_HEADLESS: "true"
-      run: pytest tests/ -n auto
+      run: pytest tests/ -n auto --ignore=tests/api
+
+  test_api:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12.1']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Checkout external repository
+      uses: actions/checkout@v4
+      with:
+        repository: "slawekradzyminski/awesome-localstack"
+        path: "awesome-localstack"
+    - name: Run Docker Compose
+      run: |
+        cd awesome-localstack
+        chmod +x run-docker-compose-ci.sh
+        ./run-docker-compose-ci.sh
+
+    - name: Installing all necessary packages
+      run: pip install -r requirements.txt
+
+    - name: API tests
+      env:
+        ADMIN_USERNAME: "admin"
+        ADMIN_PASSWORD: "admin"
+        BACKEND_URL: "http://localhost:4001"
+      run: pytest tests/api
