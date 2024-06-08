@@ -1,0 +1,6 @@
+INFO     http.client:base_api.py:18 Making POST request to URL: http://localhost:4001/users/signin
+INFO     http.client:base_api.py:24 Request JSON Body:
+{
+    "username": "one",
+    "password": "two"
+}
