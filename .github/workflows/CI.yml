@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:  # This line enables manual triggering
 
 jobs:
   test_web_chrome:
@@ -86,19 +87,20 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Checkout external repository
-        uses: actions/checkout@v4
-        with:
-          repository: "slawekradzyminski/awesome-localstack"
-          path: "awesome-localstack"
-      - name: Run Docker Compose
-        run: |
-          cd awesome-localstack
-          chmod +x run-docker-compose-ci.sh
-          ./run-docker-compose-ci.sh
+    # te 2 linie to setup środowiska. mogą nie być potrzebne w Waszej pracy
+    - name: Checkout external repository
+      uses: actions/checkout@v4
+      with:
+        repository: "slawekradzyminski/awesome-localstack"
+        path: "awesome-localstack"
+    - name: Run Docker Compose
+      run: |
+        cd awesome-localstack
+        chmod +x run-docker-compose-ci.sh
+        ./run-docker-compose-ci.sh
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
+    # - name: Setup Chrome
+    #   uses: browser-actions/setup-chrome@latest
 
       - name: Installing all necessary packages
         run: pip install -r requirements.txt pytest-xdist

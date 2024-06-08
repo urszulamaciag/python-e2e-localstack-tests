@@ -42,14 +42,15 @@ def logged_in_test(chrome_browser: webdriver):
 
 def setup_test_user():
     user = get_random_user()
-    SignUp().api_call(user)
+    register_response = SignUp().api_call(user)
+    assert register_response.status_code == 201, "Failed to register"
     return user
 
 
 def login_test_user(browser, user):
     browser.get(frontend_url)
     login_response = SignIn().api_call(user.username, user.password)
-    return login_response
+    return login_response.json()
 
 
 def cleanup_test_user(user, token):

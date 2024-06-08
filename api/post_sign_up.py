@@ -5,5 +5,4 @@ class SignUp(BaseAPI):
     def api_call(self, user: RegisterRequestDto):
         user_data = user.to_dict()
         response = self.make_request("POST", "users/signup", json=user_data)
-        assert response.status_code == 201, "Failed to register"
-        return response.json()
+        return response

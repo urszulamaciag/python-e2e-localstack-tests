@@ -7,7 +7,7 @@ FRONTEND_URL=http://localhost:8081
 BACKEND_URL=http://localhost:4001
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=admin
-IS_HEADLESS=false
+IS_HEADLESS=true
 ```
 
 ## Run in parallel
@@ -17,6 +17,7 @@ Warning: this mode disables test logs.
 ```
 pytest tests/ -n 4
 ```
+
 
 ## Allure
 
