@@ -1,0 +1,6 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Sat Jun 08 22:47:19 GMT 2024","Sat Jun 08 22:47:19 GMT 2024","664","tests","test_edit","","","","test_autocomplete",""
+"passed","Sat Jun 08 22:47:21 GMT 2024","Sat Jun 08 22:47:23 GMT 2024","2490","tests","test_edit","","","","test_edit",""
+"passed","Sat Jun 08 22:47:24 GMT 2024","Sat Jun 08 22:47:24 GMT 2024","39","tests","test_home","","","","test_successful_login",""
+"passed","Sat Jun 08 22:47:25 GMT 2024","Sat Jun 08 22:47:26 GMT 2024","682","tests","test_login","","","","test_successful_login",""
+"passed","Sat Jun 08 22:47:26 GMT 2024","Sat Jun 08 22:47:27 GMT 2024","681","tests","test_login","","","","test_failed_login",""
